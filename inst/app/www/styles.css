@@ -1,0 +1,89 @@
+/* 标题部分 */
+#header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px; /* 占屏幕高度的 1/10 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-top-left-radius: 10;
+  border-top-right-radius: 10;
+  background-color: #2D4B72;
+  background-image: url('www/background.jpg');
+  background-size: cover;
+  background-position: center;
+  margin: 0;
+  padding: 0;
+  z-index: 1000;
+}
+
+
+/* 侧边栏整体样式 */
+.main-sidebar {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 150px; /* 侧边栏宽度 */
+  height: 92vh;
+  z-index: 1000;
+  background-color: #2D4B72; /* 侧边栏背景色 #222d32 */
+  color: white; /* 侧边栏文字颜色 */
+  top: 50px;
+}
+
+
+/* 返回顶部按钮 */
+#back-to-top {
+  display: none; /* 初始隐藏 */
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+
+  color: white; /* 文字颜色 */
+  border: none;
+  border-radius: 5; /* 方形，无圆角 */
+  cursor: pointer;
+  transition: background-color 0.3s ease; /* 背景颜色过渡效果 */
+  z-index: 1001; /* 确保按钮在最上层 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px; /* 文字大小 */
+  font-style: blod;
+}
+
+/* 内容区域容器 */
+.content-wrapper {
+  background-color: #f4f6f9; /* 背景颜色 */
+  margin-left: 150px; /* 侧边栏宽度 */
+  min-height: 92vh; /* 最小高度为屏幕高度 */
+  padding: 0px; /* 内边距 */
+  margin-top: 50px;
+}
+
+/* 内容区域 */
+.content {
+  background-color: white; /* 内容背景颜色 */
+  border-radius: 5px; /* 圆角 */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 阴影 */
+  padding: 10px; /* 内边距 */
+  padding-top:10px;
+}
+
+/* 容器布局：标签和图标在同一行，两端对齐 */
+.input-container {
+  display: flex;
+  justify-content: space-between;  /* 两端对齐 */
+  align-items: center;  /* 垂直居中 */
+  width: 100%;  /* 确保容器宽度占满父容器 */
+}
+
+/* 设置问号图标的颜色为蓝色 */
+.help-icon {
+  color: #007bff;
+  cursor: pointer;
+  margin-left: 10px;  /* 图标与输入框之间的间距 */
+}
