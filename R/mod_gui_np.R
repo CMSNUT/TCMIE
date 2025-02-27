@@ -17,6 +17,7 @@ mod_gui_np_ui <- function(id) {
   tagList(
     fluidPage(
       sidebarLayout(
+        # 右侧面板 ----
         sidebarPanel(
           width = 3,
 
@@ -199,6 +200,21 @@ mod_gui_np_ui <- function(id) {
               buttonLabel = "浏览...",
               placeholder = "选择疾病-靶点文件",
             )
+          ),
+
+          ## 富集分析 ----
+          div(
+            class = "input-container",
+            strong("富集分析:"),
+            icon(
+              "question-circle",
+              class = "help-icon",
+              id = ns("enrichment_setting_help_icon")
+            )
+          ),
+          checkboxGroupInput(ns("enrichment_setting"), label = NULL,
+                             choices = c("GO分析"="go","KEGG分析"="kegg"),
+                             inline = T
           )
 
 
@@ -206,9 +222,71 @@ mod_gui_np_ui <- function(id) {
 
         ), # sidebarPanel
 
+        # 左侧面板 ----
         mainPanel(
           width = 9,
 
+          ## 标题 ----
+          titlePanel(div("中药网络药理学分析", style = "text-align: center; font-weight: bold; color: blue;")),
+
+          ## 多页面结果 ----
+          tabsetPanel(
+            id = ns("np_tabs"),
+
+            ### 药物-成分 ----
+            tabPanel(
+              "药物-成分",
+            ),
+
+            ### 成分-靶点 ----
+            tabPanel(
+              "成分-靶点",
+            ),
+
+            ### 疾病-靶点 ----
+            tabPanel(
+              "疾病-靶点",
+            ),
+
+            ### 靶点交集 ----
+            tabPanel(
+              "靶点交集",
+            ),
+
+            ### `药物-成分-靶点`网络 ----
+            tabPanel(
+              "`药物-成分-靶点`网络",
+            ),
+
+            ### PPI网络 ----
+            tabPanel(
+              "`PPI网络",
+            ),
+
+            ### `药物-成分-靶点-疾病`网络 ----
+            tabPanel(
+              "`药物-成分-靶点-疾病`网络",
+            ),
+
+            ### GO分析 ----
+            conditionalPanel(
+              ns=ns,
+              condition = "input.enrichment_setting.includes('go')",
+              tabPanel(
+                "GO分析",
+              )
+            ),
+
+            ### KEGG分析 ----
+            conditionalPanel(
+              ns=ns,
+              condition = "input.enrichment_setting.includes('kegg')",
+              tabPanel(
+                "KEGG分析",
+              )
+            )
+
+          ),
 
           ## 模态框：中药材 ----
           bsModal(
@@ -428,7 +506,41 @@ mod_gui_np_ui <- function(id) {
                 )
               )
             )
-          ) # bsModal 8
+          ), # bsModal 8
+
+          ## 模态框：富集分析 ----
+          bsModal(
+            id = ns("enrichment_setting_help_modal"),
+            # 模态框 ID
+            title = strong("富集分析", style = "color:#3185B0"),
+            # 模态框标题
+            trigger = ns("enrichment_setting_help_icon"),
+            # 触发按钮 ID
+            size = "medium",
+            # 模态框大小
+            tags$div(
+              style = "text-align: justify;",
+              p("收集疾病XX种，靶点XX个，"),
+              p("疾病-靶点数据一览表:"),
+              tags$ul(tags$li(
+                paste("OMIM: ", "5676" , "Updated date: 2025-02-26")
+              ), tags$li(
+                paste("OMIM: ", "5676" , "Updated date: 2025-02-26")
+              )),
+
+              tags$hr(),
+              h5("参考文献："),
+              tags$ul(
+                tags$li(
+                  "Ming Yang, Jialei Chen, Liwen Xu, Xiufeng Shi, Xin Zhou, Zhijun Xi, Rui An, and Xinhong Wang., A Network Pharmacology Approach to Uncover the Molecular Mechanisms of Herbal Formula Ban-Xia-Xie-Xin-Tang, Evidence-Based Complementary and Alternative Medicine, vol. 2018, Article ID 405071."
+                ),
+                tags$li(
+                  "X. J. Liang,H. Y. Li,S. Li. A novel network pharmacology approach to analyse traditional herbal formulae: the Liu-Wei-Di-Huang pill as a case study. Molecular Biosystems, 2014, 10(5): 1014-1022. DOI:",
+                  tags$a(href = "https://doi.org/10.1155/2013/731969", "10.1155/2013/731969")
+                )
+              )
+            )
+          ) # bsModal 9
 
 
         ) # mainPanel
@@ -458,6 +570,15 @@ mod_gui_np_server <- function(id, pool) {
       label = NULL,
       choices = dbGetQuery(pool, "SELECT Chinese_Name FROM herb")[, 1]
     )
+
+    # 监听输入变化
+    observeEvent(input$enrichment_setting, {
+      if ("kegg" %in% input$enrichment_setting) {
+        updateTabsetPanel(session, "np_tabs", selected = "KEGG分析")
+      } else if ("go" %in% input$enrichment_setting) {
+        updateTabsetPanel(session, "np_tabs", selected = "GO分析")
+      }
+    })
 
 
   })
