@@ -47,13 +47,14 @@ app_ui <- function(request) {
           )
       ),
       body=shinydashboard::dashboardBody(
+
         tabItems(
           # 主页 ----
           tabItem(
             tabName = "home",
             div(
               class = "tab-content",
-              includeMarkdown("./R/home.md")
+              # includeMarkdown("./R/home.md")
             )
           ),
 
@@ -126,6 +127,7 @@ app_ui <- function(request) {
           )
 
       ),
+
       div(
         id = "back-to-top",
         style = "display: none;", # 初始隐藏
