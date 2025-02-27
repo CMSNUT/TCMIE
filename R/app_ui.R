@@ -6,20 +6,19 @@
 #' @import shinydashboard
 #' @import shinydashboardPlus
 #' @import shinyBS
-#' @import DBI
-#' @import tidyverse
-#' @import pool
-#' @import RSQLite
+#' @import shinyjs
 #' @noRd
 app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
     shinyjs::useShinyjs(), # 加载 shinyjs
+
     tags$head(
       tags$link(rel = "stylesheet", type = "text/css", href = "www/styles.css"),
-      tags$script(src = "www/scripts.js") # 确保路径正确
+      tags$script(src = "www/scripts.js"), # 确保路径正确
     ),
+
     div(
       id = "header",
       style = "display: center;font-family: Microsoft YaHei; font-size: 30px; font-style: blod;color:white;",
