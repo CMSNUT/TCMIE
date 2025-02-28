@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_active_compounds.R
 \name{get_active_compounds}
 \alias{get_active_compounds}
-\title{get_active_compounds}
+\title{Retrieve active compounds from the data table}
 \usage{
 get_active_compounds(
   pool,
@@ -17,6 +17,10 @@ get_active_compounds(
 \arguments{
 \item{pool}{dbPool}
 
+\item{herb_ingredient_table}{herb_ingredient table name in database}
+
+\item{ingredient_table}{ingredient table name in database}
+
 \item{herbs}{herbs name chars}
 
 \item{ob}{OB thr}
@@ -24,12 +28,33 @@ get_active_compounds(
 \item{dl}{DL thr}
 
 \item{ro5}{RO5 thr}
-
-\item{table}{table in database}
 }
 \value{
 data
 }
 \description{
-get_active_compounds
+Retrieve active compounds from the data table
+}
+\examples{
+library(pool)
+library(DBI)
+library(RSQLite)
+
+disease <- "chronic heart failure"
+dbname <- system.file("app/data/tcmie.db", package = "TCMIE")
+
+pool <- pool::dbPool(
+  drv = RSQLite::SQLite(),  # SQLite 驱动
+  dbname = db
+)
+
+active_compounds <- get_active_compounds(
+  pool,
+  "herb_ingredient",
+  "ingredient",
+  herbs,
+  ob='Y',
+  dl = 0.18,
+  ro5 = 2,
+)
 }

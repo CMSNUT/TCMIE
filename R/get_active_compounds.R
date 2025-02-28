@@ -1,14 +1,41 @@
-#' get_active_compounds
+#' Retrieve active compounds from the data table
 #'
 #' @param pool dbPool
-#' @param table table in database
+#' @param herb_ingredient_table herb_ingredient table name in database
+#' @param ingredient_table ingredient table name in database
 #' @param herbs herbs name chars
 #' @param ob OB thr
 #' @param dl DL thr
 #' @param ro5 RO5 thr
 #'
 #' @return data
+#'
 #' @export
+#'
+#' @name get_active_compounds
+#'
+#' @examples
+#' library(pool)
+#' library(DBI)
+#' library(RSQLite)
+#'
+#' disease <- "chronic heart failure"
+#' dbname <- system.file("app/data/tcmie.db", package = "TCMIE")
+#'
+#' pool <- pool::dbPool(
+#'   drv = RSQLite::SQLite(),  # SQLite 驱动
+#'   dbname = db
+#' )
+#'
+#' active_compounds <- get_active_compounds(
+#'   pool,
+#'   "herb_ingredient",
+#'   "ingredient",
+#'   herbs,
+#'   ob='Y',
+#'   dl = 0.18,
+#'   ro5 = 2,
+#' )
 get_active_compounds <- function(
     pool,
     herb_ingredient_table,

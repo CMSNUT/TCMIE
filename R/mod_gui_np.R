@@ -612,17 +612,104 @@ mod_gui_np_server <- function(id, pool) {
         ob = "Y",
         dl = 0.18,
         ro5 =2
-      )
+      ) %>% dplyr::select(-7) %>% dplyr::arrange(Chinese_Name)
+
+      ### 成分靶点 ----
+
+
+      ### 疾病靶点 ----
+
+      if (input$disease_target_setting == "disease_db") {
+        disease_targets <- get_disease_targets(
+          pool = pool,
+          disease_targets_table = "disease_targets",
+          disease = input$disease_target_db
+        )
+      } else {
+
+      }
+
 
 
       ### 药物-成分 面板 ----
-      output$herb_compound_tab <- renderDT(
-        active_compounds
-      )
+      output$herb_compound_tab <- DT::renderDT({
+        datatable(
+          active_compounds %>% dplyr::select(-SDF),
+          extensions = c("Buttons", "Scroller"),  # 扩展功能：按钮和滚动
+          options = list(
+            dom = "Blfrtip",  # 定义表格控件布局
+            buttons = list(
+              list(
+                extend = "copy",
+                text = "复制"
+              ),
+
+              list(
+                extend = "print",
+                text = "打印"
+              ),
+
+              list(  # 创建一个下拉菜单按钮
+                extend = "collection",  # 集合按钮
+                text = "下载",  # 按钮文本
+                buttons = c("csv", "excel", "pdf")  # 包含的按钮类型
+              )
+            ),
+            pageLength = 10,  # 每页显示 10 行
+            lengthMenu = list(c(10, 25, 50,100, -1), c('10', '25','50','100','All')),  # 每页行数选项
+            scrollX = TRUE,  # 启用水平滚动
+            scrollY = "400px",  # 启用垂直滚动，高度为 400px
+            language = list(  # 设置中文语言
+              # url = "//cdn.datatables.net/plug-ins/1.10.21/i18n/Chinese.json"
+              info = '显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项',
+              search = '搜索:',
+              paginate = list(previous = '上页', `next` = '下页'),
+              lengthMenu = '显示 _MENU_ 项结果'
+            )
+          )
+        )
+      })
 
       ### 成分-靶点 面板 ----
 
       ### 疾病-靶点 面板 ----
+      output$disease_target_tab <- DT::renderDT({
+        datatable(
+          data,
+          extensions = c("Buttons", "Scroller"),  # 扩展功能：按钮和滚动
+          options = list(
+            dom = "Blfrtip",  # 定义表格控件布局
+            buttons = list(
+              list(
+                extend = "copy",
+                text = "复制"
+              ),
+
+              list(
+                extend = "print",
+                text = "打印"
+              ),
+
+              list(  # 创建一个下拉菜单按钮
+                extend = "collection",  # 集合按钮
+                text = "下载",  # 按钮文本
+                buttons = c("csv", "excel", "pdf")  # 包含的按钮类型
+              )
+            ),
+            pageLength = 10,  # 每页显示 10 行
+            lengthMenu = list(c(10, 25, 50,100, -1), c('10', '25','50','100','All')),  # 每页行数选项
+            scrollX = TRUE,  # 启用水平滚动
+            scrollY = "400px",  # 启用垂直滚动，高度为 400px
+            language = list(  # 设置中文语言
+              # url = "//cdn.datatables.net/plug-ins/1.10.21/i18n/Chinese.json"
+              info = '显示第 _START_ 至 _END_ 项结果，共 _TOTAL_ 项',
+              search = '搜索:',
+              paginate = list(previous = '上页', `next` = '下页'),
+              lengthMenu = '显示 _MENU_ 项结果'
+            )
+          )
+        )
+      })
 
       ### 靶点交集 面板 ----
 
