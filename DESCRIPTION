@@ -8,6 +8,7 @@ License: What license is it under?
 Imports: 
     config,
     DBI,
+    DT,
     golem,
     pool,
     RSQLite,

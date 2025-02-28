@@ -6,7 +6,7 @@
 #'
 #' @noRd
 #'
-#' @importFrom shiny NS tagList tabsetPanel
+#' @import shiny
 #' @import shinyBS
 #' @importFrom DBI dbGetQuery
 #' @import tidyverse
@@ -53,18 +53,18 @@ mod_gui_np_ui <- function(id) {
               id = ns("ob_threshold_setting_help_icon")
             )
           ),
-          conditionalPanel(
-            ns = ns,
-            condition = "input.ob_threshold_setting",
-            sliderInput(
-              ns("ob_threshold"),
-              label = NULL ,
-              min = 0,
-              max = 100,
-              step = 1,
-              value = 30
-            )
-          ),
+          # conditionalPanel(
+          #   ns = ns,
+          #   condition = "input.ob_threshold_setting",
+          #   sliderInput(
+          #     ns("ob_threshold"),
+          #     label = NULL ,
+          #     min = 0,
+          #     max = 100,
+          #     step = 1,
+          #     value = 30
+          #   )
+          # ),
 
           ### 类药性指数 DL ----
           div(
@@ -172,7 +172,8 @@ mod_gui_np_ui <- function(id) {
               ns("disease_target_db"),
               label = NULL,
               multiple = F,
-              choices = NULL
+              choices = NULL,
+              selected = NULL
             )
           ),
           conditionalPanel(
@@ -238,7 +239,7 @@ mod_gui_np_ui <- function(id) {
             ### 药物-成分 ----
             tabPanel(
               "药物-成分",
-              withSpinner(DT::DTOutput(ns("herb_compound_tab")))
+              DT::DTOutput(ns("herb_compound_tab"))
             ),
 
             ### 成分-靶点 ----
@@ -584,18 +585,40 @@ mod_gui_np_server <- function(id, pool) {
       choices = dbGetQuery(pool, "SELECT Chinese_Name FROM herb")[, 1]
     )
 
+    ## 疾病选择框列表 ----
+    updateSelectInput(
+      session = getDefaultReactiveDomain(),
+      "disease_target_db",
+      label = NULL,
+      selected = NULL,
+      choices = c("",dbGetQuery(pool, "SELECT Disease_Name FROM disease")[, 1])
+    )
+
 
     ## 开始分析 ----
     observeEvent(input$np_analyze_btn, {
-      ### 药材 -----
+      ### 输入 -----
       herbs <- input$choose_herbs
+      ob <- ifelse (input$ob_threshold_setting, "Y", NULL)
+      dl <- ifelse (input$dl_threshold_setting, input$dl_threshold, NULL)
+      ro5 <- ifelse (input$dl_threshold_setting, input$ro5_threshold, NULL)
 
-      ### 成分 ----
-      compounds <-
-
+      ### 活性成分 ----
+      active_compounds <- get_active_compounds(
+        pool = pool,
+        herb_ingredient_table = "herb_ingredient",
+        ingredient_table = "ingredient",
+        herbs = herbs,
+        ob = "Y",
+        dl = 0.18,
+        ro5 =2
+      )
 
 
       ### 药物-成分 面板 ----
+      output$herb_compound_tab <- renderDT(
+        active_compounds
+      )
 
       ### 成分-靶点 面板 ----
 
